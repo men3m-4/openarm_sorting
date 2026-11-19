@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="cup_sorting_table">
+    <static>true</static>
+    <!-- Model origin = floor point below the table centre. Top surface at z = 0.3 m.
+         Light birch laminate top (low saturation, so it never falls in the red/blue HSV ranges),
+         dark steel legs. -->
+    <link name="table_link">
+      <collision name="top_collision">
+        <pose>0 0 0.2875 0 0 0</pose>
+        <geometry><box><size>0.5 0.8 0.025</size></box></geometry>
+        <surface><friction><ode><mu>0.8</mu><mu2>0.8</mu2></ode></friction></surface>
+      </collision>
+      <visual name="top_visual">
+        <pose>0 0 0.2875 0 0 0</pose>
+        <geometry><box><size>0.5 0.8 0.025</size></box></geometry>
+        <material>
+          <ambient>0.74 0.69 0.60 1</ambient>
+          <diffuse>0.78 0.72 0.62 1</diffuse>
+          <specular>0.15 0.15 0.15 1</specular>
+          <pbr><metal><metalness>0.0</metalness><roughness>0.7</roughness></metal></pbr>
+        </material>
+      </visual>
+      <collision name="leg_0_collision">
+        <pose>0.210 0.360 0.1375 0 0 0</pose>
+        <geometry><box><size>0.04 0.04 0.275</size></box></geometry>
+      </collision>
+      <visual name="leg_0_visual">
+        <pose>0.210 0.360 0.1375 0 0 0</pose>
+        <geometry><box><size>0.04 0.04 0.275</size></box></geometry>
+        <material><ambient>0.18 0.18 0.19 1</ambient><diffuse>0.22 0.22 0.23 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular></material>
+      </visual>
+      <collision name="leg_1_collision">
+        <pose>0.210 -0.360 0.1375 0 0 0</pose>
+        <geometry><box><size>0.04 0.04 0.275</size></box></geometry>
+      </collision>
+      <visual name="leg_1_visual">
+        <pose>0.210 -0.360 0.1375 0 0 0</pose>
+        <geometry><box><size>0.04 0.04 0.275</size></box></geometry>
+        <material><ambient>0.18 0.18 0.19 1</ambient><diffuse>0.22 0.22 0.23 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular></material>
+      </visual>
+      <collision name="leg_2_collision">
+        <pose>-0.210 0.360 0.1375 0 0 0</pose>
+        <geometry><box><size>0.04 0.04 0.275</size></box></geometry>
+      </collision>
+      <visual name="leg_2_visual">
+        <pose>-0.210 0.360 0.1375 0 0 0</pose>
+        <geometry><box><size>0.04 0.04 0.275</size></box></geometry>
+        <material><ambient>0.18 0.18 0.19 1</ambient><diffuse>0.22 0.22 0.23 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular></material>
+      </visual>
+      <collision name="leg_3_collision">
+        <pose>-0.210 -0.360 0.1375 0 0 0</pose>
+        <geometry><box><size>0.04 0.04 0.275</size></box></geometry>
+      </collision>
+      <visual name="leg_3_visual">
+        <pose>-0.210 -0.360 0.1375 0 0 0</pose>
+        <geometry><box><size>0.04 0.04 0.275</size></box></geometry>
+        <material><ambient>0.18 0.18 0.19 1</ambient><diffuse>0.22 0.22 0.23 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular></material>
+      </visual>
+      <visual name="apron_front">
+        <pose>0.210 0.000 0.2350 0 0 0</pose>
+        <geometry><box><size>0.020 0.720 0.06</size></box></geometry>
+        <material><ambient>0.18 0.18 0.19 1</ambient><diffuse>0.22 0.22 0.23 1</diffuse></material>
+      </visual>
+      <visual name="apron_back">
+        <pose>-0.210 0.000 0.2350 0 0 0</pose>
+        <geometry><box><size>0.020 0.720 0.06</size></box></geometry>
+        <material><ambient>0.18 0.18 0.19 1</ambient><diffuse>0.22 0.22 0.23 1</diffuse></material>
+      </visual>
+      <visual name="apron_left">
+        <pose>0.000 0.360 0.2350 0 0 0</pose>
+        <geometry><box><size>0.420 0.020 0.06</size></box></geometry>
+        <material><ambient>0.18 0.18 0.19 1</ambient><diffuse>0.22 0.22 0.23 1</diffuse></material>
+      </visual>
+      <visual name="apron_right">
+        <pose>0.000 -0.360 0.2350 0 0 0</pose>
+        <geometry><box><size>0.420 0.020 0.06</size></box></geometry>
+        <material><ambient>0.18 0.18 0.19 1</ambient><diffuse>0.22 0.22 0.23 1</diffuse></material>
+      </visual>
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>openarm_sorting_manipulation</name>
+  <version>0.2.0</version>
+  <description>
+    MoveIt 2 based pick-and-place for the OpenArm cup-sorting simulation (LEFT arm and LEFT
+    gripper only): task coordinator, move_group client, gripper client, planning scene,
+    step-by-step verification and recovery, the operator confirmation prompt and a
+    ground-truth placement check (test tool).
+  </description>
+  <maintainer email="muhammad.abdelmoniem4@gmail.com">men3m</maintainer>
+  <license>Apache-2.0</license>
+
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>builtin_interfaces</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>shape_msgs</exec_depend>
+  <exec_depend>moveit_msgs</exec_depend>
+  <exec_depend>control_msgs</exec_depend>
+  <exec_depend>controller_manager_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <!-- check_cup_contents (test tool) reuses the Gazebo ground-truth reader -->
+  <exec_depend>openarm_sorting_vision</exec_depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

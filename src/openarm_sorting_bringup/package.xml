@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>openarm_sorting_bringup</name>
+  <version>0.2.0</version>
+  <description>
+    System bringup of the OpenArm cup-sorting simulation: launch files (complete application
+    and individual subsystems), Gazebo world and models, RViz configurations, MoveIt runtime
+    overrides and the controller readiness gate used for event-driven startup.
+  </description>
+  <maintainer email="muhammad.abdelmoniem4@gmail.com">men3m</maintainer>
+  <license>Apache-2.0</license>
+
+
+  <!-- launch infrastructure -->
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>controller_manager_msgs</exec_depend>
+
+  <!-- project packages -->
+  <exec_depend>openarm_sorting_description</exec_depend>
+  <exec_depend>openarm_sorting_vision</exec_depend>
+  <exec_depend>openarm_sorting_manipulation</exec_depend>
+
+  <!-- upstream OpenArm -->
+  <exec_depend>openarm_description</exec_depend>
+  <exec_depend>openarm_bimanual_moveit_config</exec_depend>
+  <exec_depend>zed_description</exec_depend>
+
+  <!-- simulation -->
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+
+  <!-- MoveIt 2 + visualisation -->
+  <exec_depend>moveit_configs_utils</exec_depend>
+  <exec_depend>moveit_ros_move_group</exec_depend>
+  <exec_depend>moveit_kinematics</exec_depend>
+  <exec_depend>moveit_planners_ompl</exec_depend>
+  <exec_depend>moveit_simple_controller_manager</exec_depend>
+  <exec_depend>moveit_ros_visualization</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>rqt_image_view</exec_depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

@@ -1,0 +1,20 @@
+# Runtime overrides on top of the upstream openarm_bimanual_moveit_config (v2.0).
+# The upstream files are NOT modified; these parameters are loaded after them.
+# Loaded by moveit.launch.py (move_group) and rviz.launch.py (kinematics only matter there).
+/**:
+  ros__parameters:
+    # The stock 5 ms KDL timeout is too short for reliable 7-DOF IK.
+    robot_description_kinematics:
+      left_arm:
+        kinematics_solver: kdl_kinematics_plugin/KDLKinematicsPlugin
+        kinematics_solver_search_resolution: 0.005
+        kinematics_solver_timeout: 0.05
+      right_arm:
+        kinematics_solver: kdl_kinematics_plugin/KDLKinematicsPlugin
+        kinematics_solver_search_resolution: 0.005
+        kinematics_solver_timeout: 0.05
+    # Gazebo position control lags behind the reference a little; give execution slack.
+    trajectory_execution:
+      allowed_execution_duration_scaling: 2.0
+      allowed_goal_duration_margin: 1.0
+      allowed_start_tolerance: 0.05

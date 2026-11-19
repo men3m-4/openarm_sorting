@@ -1,0 +1,18 @@
+# colcon artefacts
+/build/
+/install/
+/log/
+# ROS / run logs
+.ros/
+*.log
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+# upstream OpenArm clones keep their own git history (pinned in upstream.repos)
+/src/upstream/
+# editors
+.vscode/
+.idea/
+*.swp

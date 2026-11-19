@@ -1,0 +1,27 @@
+# Geometry of the cup-sorting scene, in the `world` frame (metres, radians).
+# MUST match openarm_sorting_bringup/worlds/openarm_cup_sorting_world.sdf.
+# Used by the sorting coordinator to build the MoveIt planning scene and to know where the
+# cup is (the cup is NOT detected by the camera), and by check_cup_contents (test tool).
+# Cube poses are deliberately NOT configured here: the coordinator always uses the poses
+# measured by the camera (cube_detector).
+cup_sorting_coordinator:
+  ros__parameters:
+    planning_frame: world
+
+    table:
+      # box centre and size (top surface at z = 0.30)
+      center: [0.37, 0.05, 0.2875]
+      size: [0.50, 0.80, 0.025]
+
+    cup:
+      # bottom centre of the cup on the table
+      base: [0.36, 0.32, 0.30]
+      inner_radius: 0.055
+      outer_radius: 0.060
+      height: 0.095
+      floor_thickness: 0.008
+      # Release offsets (x, y) from the cup axis, per cube, so both cubes end up side by side
+      release_offset_red: [-0.02, 0.0]
+      release_offset_blue: [0.02, 0.0]
+
+    cube_size: 0.040

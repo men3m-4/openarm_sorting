@@ -1,0 +1,46 @@
+# Parameters of the cube_detector node (OpenCV HSV colour segmentation + depth).
+# The values are the validated defaults of the node (identical to the code defaults);
+# they are listed here so they can be tuned without touching the code.
+# Loaded by openarm_sorting_bringup/launch/perception.launch.py.
+cube_detector:
+  ros__parameters:
+    # ---- frames and topics
+    target_frame: world                                   # output frame (= MoveIt planning frame)
+    optical_frame: openarm_zed_sim_camera_optical_frame   # frame of the back-projected points
+    image_topic: /openarm_zed/image                       # rgb8
+    depth_topic: /openarm_zed/depth_image                 # 32FC1, metres, z-depth
+    camera_info_topic: /openarm_zed/camera_info
+    output_namespace: /cup_sorting                        # -> /cup_sorting/<colour>_cube/pose ...
+    colors: [red, blue]
+    cube_size: 0.040                                      # m (edge length)
+
+    # ---- HSV segmentation (OpenCV units: H 0..179, S/V 0..255); red wraps around H = 0
+    hsv:
+      red:
+        hue_ranges: [0, 8, 172, 179]                      # flat [lo, hi, lo, hi]
+        s_min: 120
+        v_min: 50
+      blue:
+        hue_ranges: [100, 128]
+        s_min: 120
+        v_min: 50
+
+    # ---- blob filter
+    min_area_px: 60
+    max_area_px: 20000
+    min_fill_ratio: 0.55          # blob area / min-area-rectangle area
+
+    # ---- depth
+    erode_px: 2                   # drop mixed cube/background edge pixels
+    min_depth: 0.15               # m
+    max_depth: 2.0                # m
+    min_valid_depth_px: 25
+
+    # ---- cube geometry checks
+    top_band: 0.006               # m below the 95th-percentile height = top face
+    size_tolerance: 0.012         # m, top face may not exceed cube_size + this
+
+    # ---- temporal stability gate (publish only stable estimates)
+    stability_window: 6           # samples
+    stability_window_sec: 1.5     # s
+    stability_tolerance: 0.004    # m, max distance of every sample from the median

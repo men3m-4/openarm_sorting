@@ -1,0 +1,40 @@
+# Motion, gripper and verification parameters of the cup_sorting_coordinator (LEFT arm).
+# The values are the validated defaults of the node (identical to the code defaults);
+# they are listed here so they can be tuned without touching the code.
+# Scene geometry (table, cup, cube size) is in cup_sorting_scene.yaml.
+# Loaded by openarm_sorting_bringup/launch/coordinator.launch.py.
+cup_sorting_coordinator:
+  ros__parameters:
+    planning_frame: world
+    auto_start: false                 # true: run red -> blue by itself once ready (no operator)
+    detection_namespace: /cup_sorting # cube poses: <ns>/<colour>_cube/pose
+
+    # ---- grasp geometry
+    tcp_offset: 0.160                 # m, fingertip-pad centre along ee_base_link -z
+    grasp_pitch_deg: 60.0             # fingers tilted forward from vertical
+    grasp_z_offset: 0.013             # m, TCP above the cube centre (table clearance)
+    approach_height: 0.10             # m, pre-grasp above the grasp pose
+    lift_height: 0.12                 # m
+    release_clearance: 0.015          # m, cube bottom above the cup rim at release
+
+    # ---- gripper (finger_joint1 angle, rad)
+    open_position: 0.45               # pad gap ~8.8 cm
+    release_position: 0.35
+    close_position: 0.0               # keep squeezing: position control stops on the cube
+    grasp_min_position: 0.12          # finger angle window meaning "a 4 cm cube is held"
+    grasp_max_position: 0.32          #   (expected ~0.22; an empty gripper closes to ~0)
+    gripper_max_effort: 7.0
+
+    # ---- motion and verification
+    velocity_scaling: 0.20            # also used as acceleration scaling
+    tracking_tolerance: 0.03          # rad, max joint error after every motion
+    settle_timeout: 3.0               # s, time allowed to reach the tracking tolerance
+    finger_contact_tolerance: 0.05    # rad, finger change during the descent = unexpected contact
+    # ready pose above the table: TCP x, y, z triples (world), tried in order
+    ready_tcp_candidates: [0.20, 0.28, 0.52, 0.22, 0.22, 0.50, 0.25, 0.30, 0.55]
+    required_controllers:
+      - joint_state_broadcaster
+      - left_joint_trajectory_controller
+      - right_joint_trajectory_controller
+      - left_gripper_controller
+      - right_gripper_controller

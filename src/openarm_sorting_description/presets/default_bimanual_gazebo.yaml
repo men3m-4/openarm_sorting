@@ -1,0 +1,224 @@
+
+# Copyright 2026 Enactic, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# ---------------------------------------------------------------------------
+# OpenArm cup-sorting project: Gazebo variant of upstream presets/v2/default_bimanual.yaml
+# (openarm_description @ 8dbfcc9). Differences from the upstream preset:
+#   * systems.*.hardware_plugin = gz_ros2_control/GazeboSimSystem, command [position],
+#     state [position, velocity]   (simulation instead of the CAN hardware)
+#   * primary/secondary_arm joint4 limit override (lower ~0, upper 2.4435 rad)
+# Loaded by urdf/openarm_v20_gazebo.urdf.xacro of this package. Originally this file lived
+# (untracked) inside the upstream clone; it was moved here so upstream stays unmodified.
+# ---------------------------------------------------------------------------
+
+robot:
+  name: openarm_v20
+  root_frame: world
+  components:
+  - body
+  - primary_arm
+  - secondary_arm
+  - primary_arm_end_effector
+  - secondary_arm_end_effector
+  - body_camera_mount
+  - body_camera
+
+body:
+  type: body
+  prefix: openarm_body_
+  enabled: true
+  product: v2.0
+  config: null
+  inertials: nominal
+  connection:
+    parent: world
+    origin:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+  reflect:
+    x: 1
+    y: 1
+    z: 1
+  limit_override_joints: {}
+
+primary_arm:
+  type: arm
+  enabled: true
+  product: openarm_v2.0
+  config: null
+  inertials: nominal
+  prefix: openarm_left_
+  connection:
+    attach_to: body
+    parent_reference_point: left_arm_mount_point
+    parent: null
+    origin: null
+  reflect:
+    x: 1
+    y: -1
+    z: 1
+    include:
+      links:
+      - base_link
+      - link1
+      - link2
+      - link5
+      - link6
+      - link7
+      joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint5
+      - joint6
+      - joint7
+      reference_points:
+      - ee_mount_point
+  limit_override_joints:
+    joint4:
+      lower: -0.000000001
+      upper: 2.4435
+      velocity: 5.4454
+      effort: 27
+
+secondary_arm:
+  type: arm
+  enabled: true
+  product: openarm_v2.0
+  config: null
+  inertials: nominal
+  prefix: openarm_right_
+  connection:
+    attach_to: body
+    parent_reference_point: right_arm_mount_point
+    parent: null
+    origin: null
+  reflect:
+    x: 1
+    y: 1
+    z: 1
+  limit_override_joints:
+    joint4:
+      lower: -0.000000001
+      upper: 2.4435
+      velocity: 5.4454
+      effort: 27
+
+primary_arm_end_effector:
+  type: end_effector
+  enabled: true
+  product: pinch_gripper
+  config: null
+  inertials: nominal
+  prefix: openarm_left_
+  connection:
+    attach_to: primary_arm
+    parent_reference_point: ee_mount_point
+    parent: null
+    origin: null
+  reflect:
+    x: 1
+    y: -1
+    z: 1
+  limit_override_joints: {}
+
+secondary_arm_end_effector:
+  type: end_effector
+  enabled: true
+  product: pinch_gripper
+  config: null
+  inertials: nominal
+  prefix: openarm_right_
+  connection:
+    attach_to: secondary_arm
+    parent_reference_point: ee_mount_point
+    parent: null
+    origin: null
+  reflect:
+    x: 1
+    y: 1
+    z: 1
+  limit_override_joints: {}
+
+body_camera_mount:
+  type: accessory
+  enabled: true
+  product: zed_mount
+  config: null
+  inertials: nominal
+  prefix: openarm_body_zed_support_
+  connection:
+    attach_to: body
+    parent_reference_point: camera_mount_point
+
+body_camera:
+  type: sensor
+  enabled: true
+  product: zed
+  config:
+    camera_name: openarm_body_zed
+    camera_model: zedm
+  connection:
+    attach_to: body_camera_mount
+    parent_reference_point: camera_mount_point
+    origin:
+      x: 0.00119247
+      y: -0.007723415
+      z: 0.00008746
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+
+systems:
+  openarm_left_hardware_interface:
+    hardware_plugin: gz_ros2_control/GazeboSimSystem
+    command_interfaces: [position]
+    state_interfaces: [position, velocity]
+    joints:
+      primary_arm:
+        joint1: {idx: 1}
+        joint2: {idx: 2}
+        joint3: {idx: 3}
+        joint4: {idx: 4}
+        joint5: {idx: 5}
+        joint6: {idx: 6}
+        joint7: {idx: 7}
+      primary_arm_end_effector:
+        joint1: {idx: 8}
+
+  openarm_right_hardware_interface:
+    hardware_plugin: gz_ros2_control/GazeboSimSystem
+    command_interfaces: [position]
+    state_interfaces: [position, velocity]
+    joints:
+      secondary_arm:
+        joint1: {idx: 1}
+        joint2: {idx: 2}
+        joint3: {idx: 3}
+        joint4: {idx: 4}
+        joint5: {idx: 5}
+        joint6: {idx: 6}
+        joint7: {idx: 7}
+      secondary_arm_end_effector:
+        joint1: {idx: 8}
+
+preview:
+  view:
+    eye: {x: 3.35215806, y: -3.3373551, z: 1.6202152}
+    lookat: {x: 0.0, y: 0.0, z: 0.0}

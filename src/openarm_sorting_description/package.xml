@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>openarm_sorting_description</name>
+  <version>0.2.0</version>
+  <description>
+    Gazebo Harmonic variant of the OpenArm v2.0 bimanual robot for the cup-sorting simulation:
+    robot Xacro wrapper, Gazebo robot preset, gz_ros2_control controller configuration,
+    simulated RGB-D sensor and the Gazebo-only gripper finger collision patch.
+  </description>
+  <maintainer email="muhammad.abdelmoniem4@gmail.com">men3m</maintainer>
+  <license>Apache-2.0</license>
+
+
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>openarm_description</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <!-- referenced by the Xacro / controller YAML at runtime -->
+  <exec_depend>gz_ros2_control</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>joint_trajectory_controller</exec_depend>
+  <!-- provides the position_controllers/GripperActionController plugin -->
+  <exec_depend>gripper_controllers</exec_depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
