@@ -1,0 +1,35 @@
+# EXAMPLE configuration of the perception nodes for an arbitrary camera / robot.
+# Copy, adapt, and pass with params_file:=... (see launch/fiducial_perception.launch.py).
+aruco_detector:
+  ros__parameters:
+    image_topic: /camera/color/image_raw
+    camera_info_topic: /camera/color/camera_info
+    depth_topic: ""                 # e.g. /camera/aligned_depth_to_color/image_raw; "" = RGB only
+    camera_frame: ""                # "" = image header frame (must be an OPTICAL frame)
+    aruco_dictionary: DICT_4X4_50
+    marker_ids: [7]
+    marker_sizes: [0.040]           # black square edge [m] - measure the printed marker!
+    default_marker_size: 0.0        # <= 0: ignore ids that are not listed
+    corner_refinement: apriltag     # none | subpix | contour | apriltag (most accurate, see docs)
+    min_side_px: 12.0
+    max_reprojection_error: 2.0
+    publish_tf: true
+    tf_prefix: aruco_
+    publish_debug_image: true
+
+fiducial_object_tracker:
+  ros__parameters:
+    reference_frame: base_link      # robot base / planning frame
+    detections_topic: aruco_detector/detections
+    tracked_objects: [my_object]
+    objects:
+      my_object:
+        marker_id: 7
+        marker_to_object: [0.0, 0.0, -0.01, 0.0, 0.0, 0.0]   # x y z roll pitch yaw
+    filter:
+      window: 8
+      max_age: 1.5
+      position_tolerance: 0.004
+      angle_tolerance: 0.05
+    min_confidence: 0.0
+    require_depth_refined: false

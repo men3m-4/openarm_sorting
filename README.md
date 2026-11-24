@@ -1,4 +1,43 @@
-# OpenArm Cup Sorting (ROS 2 Jazzy · Gazebo Harmonic · MoveIt 2)
+# OpenArm Visual Manipulation (ROS 2 Jazzy · Gazebo Harmonic · MoveIt 2)
+
+**Main scenario – coffee workstation.** A simulated **OpenArm v2.0** (left arm, pinch gripper,
+body-mounted RGB-D camera) finds an espresso **portafilter** and the machine's **group head**
+with **ArUco markers**, grasps the portafilter, aligns it with **position-based visual
+servoing**, inserts it into the bayonet, **turns it to lock**, verifies the lock (the
+portafilter must stay in the machine with the gripper open), then unlocks, removes it and
+puts it back in its stand. The perception, pose-estimation, grasp, motion, gripper and task
+code is a **reusable, robot- and simulator-independent framework** (`visual_manipulation_*`);
+everything OpenArm/Gazebo-specific is configuration and launch files.
+
+```bash
+source /opt/ros/jazzy/setup.bash && source ~/openarm_sorting/install/setup.bash
+ros2 launch openarm_sorting_bringup coffee_portafilter.launch.py          # coffee task (main)
+ros2 launch openarm_sorting_bringup cup_sorting.launch.py                 # cube sorting (legacy demo, unchanged)
+```
+
+| Coffee scenario documentation | |
+|---|---|
+| [docs/coffee/COFFEE_TASK.md](docs/coffee/COFFEE_TASK.md) | scene, frames, task sequence, how to run, validation results, limitations |
+| [docs/coffee/FRAMEWORK_ARCHITECTURE.md](docs/coffee/FRAMEWORK_ARCHITECTURE.md) | packages, responsibilities, design decisions, porting to MuJoCo / the real robot |
+| [docs/coffee/INTERFACES.md](docs/coffee/INTERFACES.md) | every topic, service, TF frame and parameter |
+
+### Packages (coffee framework)
+
+| Package | Role | Depends on Gazebo / OpenArm? |
+|---|---|---|
+| `visual_manipulation_interfaces` | messages: fiducial detections with quality, tracked objects, task status | no |
+| `visual_manipulation_core` | SE(3), pose filter, grasp generation, bayonet planning, PBVS, state machine (pure Python + NumPy) | no |
+| `visual_manipulation_perception` | `aruco_detector` (RGB, optional RGB-D refinement), `fiducial_object_tracker` (TF2, marker→object) | no |
+| `visual_manipulation_motion` | MoveIt 2 client, TCP-level arm with verified execution, GripperCommand client, scene shapes | no |
+| `visual_manipulation_tasks` | `portafilter_task` coordinator, generic `task_prompt` | no |
+| `visual_manipulation_gazebo` | Gazebo-only: ground-truth check tool, optional grasp assist | Gazebo |
+| `openarm_sorting_bringup` | worlds, models (+ generator), `config/coffee/*.yaml`, launch files | OpenArm + Gazebo |
+| `openarm_sorting_description` | simulated robot + camera (optional grasp-assist plugin) | OpenArm + Gazebo |
+
+The rest of this README describes the original **cup-sorting** scenario, which is kept
+working and unchanged as a regression / legacy demo.
+
+# Legacy scenario: OpenArm Cup Sorting
 
 A simulated **OpenArm v2.0** robot uses its **left arm** to find a **red** and a **blue** cube
 with an RGB-D camera, pick each one with MoveIt 2 and drop both into **one coffee cup**: red

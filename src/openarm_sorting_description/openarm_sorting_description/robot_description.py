@@ -37,8 +37,13 @@ def xacro_mappings(controllers_file: Optional[str] = None) -> Dict[str, str]:
     return {'controllers_file': controllers_file or default_controllers_file()}
 
 
-def gazebo_robot_description(controllers_file: Optional[str] = None) -> Tuple[str, List[str]]:
-    """Return (urdf_xml, patch_report) for robot_state_publisher -> Gazebo."""
-    urdf = xacro.process_file(xacro_file(), mappings=xacro_mappings(controllers_file)).toxml()
+def gazebo_robot_description(controllers_file: Optional[str] = None,
+                             grasp_assist_child_model: str = '') -> Tuple[str, List[str]]:
+    """Return (urdf_xml, patch_report) for robot_state_publisher -> Gazebo.
+    grasp_assist_child_model: Gazebo-only DetachableJoint grasp assist for that model ('' = off)."""
+    mappings = xacro_mappings(controllers_file)
+    if grasp_assist_child_model:
+        mappings['grasp_assist_child_model'] = grasp_assist_child_model
+    urdf = xacro.process_file(xacro_file(), mappings=mappings).toxml()
     return patch_gripper_collisions(
         urdf, {'openarm_description': get_package_share_directory('openarm_description')})

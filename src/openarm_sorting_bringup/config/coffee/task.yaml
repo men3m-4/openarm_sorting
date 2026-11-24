@@ -1,0 +1,103 @@
+# Configuration of the generic portafilter task coordinator (visual_manipulation_tasks) for the
+# SIMULATED OpenArm v2.0, LEFT arm + LEFT pinch gripper. Everything robot specific is here;
+# object geometry and marker transforms come from coffee_geometry.yaml (loaded first).
+# No joint positions and no object poses are configured: the robot moves to poses computed
+# from the camera measurements (except the ready pose, a TCP pose above the table).
+portafilter_task:
+  ros__parameters:
+    planning_frame: world
+    auto_start: false
+
+    arm:
+      group: left_arm                                # MoveIt planning group
+      tip_link: openarm_left_ee_base_link            # IK / Cartesian link of the group
+      joints: [openarm_left_joint1, openarm_left_joint2, openarm_left_joint3, openarm_left_joint4,
+               openarm_left_joint5, openarm_left_joint6, openarm_left_joint7]
+      hand_links: [openarm_left_ee_base_link, openarm_left_ee_link1, openarm_left_ee_link2]
+      # tool centre point = centre of the fingertip pads, 16 cm along -z of the tip link
+      flange_to_tcp: [0.0, 0.0, -0.160, 0.0, 0.0, 0.0]
+      moveit_namespace: ""
+
+    motion:
+      velocity_scaling: 0.20                         # also acceleration scaling
+      insertion_velocity_scaling: 0.08               # alignment / insertion / rotation moves
+      holding_velocity_scaling: 0.10                 # transport moves with the portafilter in hand
+      # rad, max joint error after every motion: the arm sags 0.015-0.031 rad under the
+      # 0.4 kg portafilter; a blocking contact gives 0.15-0.22 rad (measured)
+      tracking_tolerance: 0.045
+      settle_timeout: 3.0
+      ik_attempts: 12
+      cartesian_max_step: 0.004
+      # ready pose(s) above the table: TCP [x y z roll pitch yaw], fingers pitched 60 deg forward
+      ready_tcp_poses: [0.20, 0.28, 0.52, 0.0, -1.047198, 0.0,
+                        0.22, 0.22, 0.50, 0.0, -1.047198, 0.0,
+                        0.25, 0.30, 0.55, 0.0, -1.047198, 0.0]
+
+    gripper:
+      action: /left_gripper_controller/gripper_cmd
+      joint: openarm_left_finger_joint1
+      open_position: 0.45                            # pad gap ~8.8 cm
+      release_position: 0.40
+      close_position: 0.0                            # keep squeezing (position control)
+      # finger window meaning "32 mm handle held" (measured: 0.146-0.161 rad on the grip with
+      # the 60 deg pitched grasp; an empty gripper closes to ~0)
+      grasp_min_position: 0.10
+      grasp_max_position: 0.22
+      max_effort: 7.0
+      settle_time: 2.5
+      contact_tolerance: 0.05
+
+    required_controllers: [joint_state_broadcaster, left_joint_trajectory_controller, left_gripper_controller]
+
+    perception:
+      objects_topic: /fiducial_object_tracker/objects
+      reset_service: /fiducial_object_tracker/reset
+      timeout: 8.0
+      in_hand_tolerance: 0.02                        # camera vs hand prediction of the held part
+
+    # grasp candidates: TCP pose in the PORTAFILTER frame [x y z roll pitch yaw]. Handle grip
+    # centre line is z = -0.034; the fingers are pitched 60 deg towards the basket and close
+    # across the handle (y). The marker is NOT the grasp frame (see coffee_geometry.yaml).
+    # Usable band along the handle: x 0.145..0.17 (closer to the basket the fingertips touch
+    # the tag plate); TCP 6 mm below the centre line (higher, the fingers catch the top edge).
+    grasp:
+      candidates: [handle_a, handle_b, handle_c]
+      handle_a: {object_to_tcp: [0.150, 0.0, -0.040, 0.0, -1.047198, 3.141593]}
+      handle_b: {object_to_tcp: [0.157, 0.0, -0.040, 0.0, -1.047198, 3.141593]}
+      handle_c: {object_to_tcp: [0.145, 0.0, -0.040, 0.0, -1.047198, 3.141593]}
+      approach: {direction: [0.0, 0.0, -1.0], distance: 0.08, frame: base}   # straight down
+      retreat:  {direction: [0.0, 0.0, 1.0], distance: 0.08, frame: base}    # lift out of the dock
+
+    install:
+      staging_offset: [0.10, 0.0, 0.0]               # m, in the mount frame (+x = towards the robot)
+      rotation_step_deg: 5.0
+
+    servo:                                           # position-based visual servoing at pre-insert
+      enabled: true
+      gain: 0.9
+      max_iterations: 6
+      position_tolerance: 0.0012                     # radial (lip clearance 2.5 mm)
+      axial_tolerance: 0.002
+      angle_tolerance_deg: 1.5                       # about the mount axis (notch clearance +-6 deg)
+      tilt_tolerance_deg: 1.5
+      accept_factor: 1.6                             # accept residuals up to 1.6x after max_iterations
+      coarse_factor: 2.5                             # tolerances x2.5 for the staging (free space) servo
+      insert_axial_tolerance: 0.001                  # depth check after insertion (1.5 / 2.5 mm lug-lip / rim-screen gaps)
+      correct_tilt: true                             # re-level the basket (grasp droop)
+      max_translation: 0.02
+
+    verify:
+      radial_tolerance: 0.006                        # locked part hanging in the clearances (measured <= 4.4 mm)
+      axial_tolerance: 0.006
+      angle_tolerance_deg: 6.0
+      release_test: true                             # open the fingers in place: a locked bayonet holds it
+      release_test_position: 0.30                    # rad, fingers clear of the 32 mm grip
+      release_test_wait: 1.5
+      place_tolerance: 0.008
+
+    release:
+      clearance: 0.002
+      fine_align_height: 0.03                        # second (fine) servo this high above the place pose
+      # designated place pose (portafilter frame, world) used only when the task did not pick the
+      # portafilter itself (~/remove after a restart): the dock
+      place_pose: [0.44, 0.32, 0.434, 0.0, 0.0, 3.141593]

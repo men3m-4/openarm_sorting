@@ -18,9 +18,11 @@ from openarm_sorting_description import robot_description
 
 def launch_setup(context):
     controllers_file = LaunchConfiguration('controllers_file').perform(context) or None
-    urdf, patch_report = robot_description.gazebo_robot_description(controllers_file)
+    assist = LaunchConfiguration('grasp_assist_child_model').perform(context)
+    urdf, patch_report = robot_description.gazebo_robot_description(controllers_file, assist)
     return [
-        LogInfo(msg='[robot] Gazebo gripper collision patch: ' + '; '.join(patch_report)),
+        LogInfo(msg='[robot] Gazebo gripper collision patch: ' + '; '.join(patch_report)
+                + (f'; grasp assist (DetachableJoint) for model "{assist}"' if assist else '')),
         Node(
             package='robot_state_publisher', executable='robot_state_publisher',
             name='robot_state_publisher', output='log',
@@ -40,5 +42,7 @@ def generate_launch_description():
         DeclareLaunchArgument('controllers_file', default_value='',
                               description='gz_ros2_control controller YAML written into the URDF '
                                           '(empty = openarm_sorting_description/config/gazebo_controllers.yaml)'),
+        DeclareLaunchArgument('grasp_assist_child_model', default_value='',
+                              description='Gazebo-only grasp assist (DetachableJoint) child model; "" = off'),
         OpaqueFunction(function=launch_setup),
     ])

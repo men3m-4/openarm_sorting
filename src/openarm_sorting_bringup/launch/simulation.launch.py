@@ -112,7 +112,8 @@ def launch_setup(context):
         LogInfo(msg=f'[simulation] world: {world} ({"GUI" if gz_gui else "headless"})'),
         gazebo,
         RegisterEventHandler(OnProcessExit(target_action=_is_gazebo_frontend, on_exit=after_gazebo)),
-        _include('robot.launch.py', controllers_file=controllers_file, use_sim_time='true'),
+        _include('robot.launch.py', controllers_file=controllers_file, use_sim_time='true',
+                 grasp_assist_child_model=LaunchConfiguration('grasp_assist_child_model').perform(context)),
         bridge,
         spawn_robot,
         RegisterEventHandler(OnProcessExit(target_action=spawn_robot, on_exit=after_spawn)),
@@ -129,5 +130,7 @@ def generate_launch_description():
         DeclareLaunchArgument('nvidia_offload', default_value='auto',
                               description='auto|true|false: NVIDIA PRIME render offload for Gazebo/RViz '
                                           '(auto = if the NVIDIA EGL vendor file exists)'),
+        DeclareLaunchArgument('grasp_assist_child_model', default_value='',
+                              description='Gazebo-only grasp assist (DetachableJoint) child model; "" = off'),
         OpaqueFunction(function=launch_setup),
     ])

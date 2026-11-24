@@ -33,6 +33,10 @@
   <xacro:arg name="left_can_interface" default="" />
   <xacro:arg name="right_can_interface" default="" />
   <xacro:arg name="can_fd" default="" />
+  <!-- Gazebo-only grasp assist (coffee scenario): name of the model the LEFT hand may weld to
+       through gz::sim::systems::DetachableJoint ("" = no plugin, the default). See
+       visual_manipulation_gazebo/grasp_assist.py. -->
+  <xacro:arg name="grasp_assist_child_model" default="" />
 
   <!-- Same body as the upstream `openarm_robot` macro (openarm_description
        assets/common/robot.xacro @ 8dbfcc9). The ONLY difference is that the preset is
@@ -103,6 +107,27 @@
       <parameters>$(arg controllers_file)</parameters>
     </plugin>
   </gazebo>
+
+  <!-- Optional Gazebo grasp assist: a fixed joint between the left hand and <child_model>,
+       created / removed on request (gz topics /grasp_assist/attach, /grasp_assist/detach).
+       The plugin attaches when it starts; grasp_assist.py detaches it immediately and then only
+       attaches while the fingers are stalled closed on the handle. Simulation only - it stands
+       in for the friction a real rubber-padded pinch grip provides, which the bullet-featherstone
+       box contacts reproduce poorly (measured creep of the cantilevered portafilter). -->
+  <xacro:property name="grasp_assist_model" value="$(arg grasp_assist_child_model)" />
+  <xacro:if value="${grasp_assist_model != ''}">
+    <gazebo>
+      <plugin filename="gz-sim-detachable-joint-system" name="gz::sim::systems::DetachableJoint">
+        <parent_link>openarm_left_ee_base_link</parent_link>
+        <child_model>${grasp_assist_model}</child_model>
+        <child_link>link</child_link>
+        <attach_topic>/grasp_assist/attach</attach_topic>
+        <detach_topic>/grasp_assist/detach</detach_topic>
+        <output_topic>/grasp_assist/state</output_topic>
+        <suppress_child_warning>true</suppress_child_warning>
+      </plugin>
+    </gazebo>
+  </xacro:if>
 
   <!-- TF frame of the simulated RGB-D sensor (published by robot_state_publisher).
        It sits 3 cm in front of openarm_body_zed_camera_center along the camera

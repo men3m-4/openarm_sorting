@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>visual_manipulation_tasks</name>
+  <version>0.1.0</version>
+  <description>
+    Task coordinators of the visual-manipulation framework. portafilter_task: vision-guided
+    grasp, transport, alignment (visual servoing), bayonet insertion + locking, verification,
+    unlocking, removal and placement of an espresso portafilter. Robot, camera and simulator
+    independent: everything specific is configuration; only standard ROS 2 / MoveIt 2
+    interfaces are used.
+  </description>
+  <maintainer email="muhammad.abdelmoniem4@gmail.com">men3m</maintainer>
+  <license>Apache-2.0</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>std_srvs</exec_depend>
+  <exec_depend>controller_manager_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>visual_manipulation_interfaces</exec_depend>
+  <exec_depend>visual_manipulation_core</exec_depend>
+  <exec_depend>visual_manipulation_motion</exec_depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

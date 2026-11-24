@@ -43,3 +43,20 @@ with SIGINT and checks that nothing is left.
 ```bash
 python3 tests/integration/subsystem_launch_test.py [--rviz] [--log-dir DIR]
 ```
+
+## integration/e2e_coffee.py (coffee / portafilter task)
+
+Starts `coffee_portafilter.launch.py` headless without the prompt, checks readiness and
+`plan_check` (nothing moves), then executes the task and checks the outcome against Gazebo
+ground truth (`check_portafilter`), and that Ctrl+C (SIGINT) leaves no process behind.
+
+```bash
+python3 tests/integration/e2e_coffee.py                         # one /run (install + remove), ~3 min
+python3 tests/integration/e2e_coffee.py --runs 3                # repeatability on one simulation
+python3 tests/integration/e2e_coffee.py --mode install-remove   # /install (LOCKED by ground truth), then /remove
+python3 tests/integration/e2e_coffee.py --no-grasp-assist       # pure friction grasp (alternative)
+python3 tests/integration/e2e_coffee.py --rgb-only              # perception without depth (alternative)
+```
+
+Output: one PASS/FAIL line per check, `RESULT: PASS|FAIL`, logs in `--log-dir`
+(default `./e2e_coffee_logs/`).

@@ -1,0 +1,41 @@
+# ALTERNATIVE perception configuration: RGB ONLY (no depth refinement) - for cameras without
+# depth and for the accuracy comparison in docs/coffee/COFFEE_TASK.md. Use:
+#   ros2 launch openarm_sorting_bringup coffee_portafilter.launch.py \
+#       perception_params:=$(ros2 pkg prefix openarm_sorting_bringup)/share/openarm_sorting_bringup/config/coffee/perception_rgb_only.yaml
+# Identical to perception.yaml except depth_topic / use_depth.
+aruco_detector:
+  ros__parameters:
+    image_topic: /openarm_zed/image
+    camera_info_topic: /openarm_zed/camera_info
+    # The simulated sensor is RGB-D, so the depth refinement is used. Set depth_topic: "" to
+    # run RGB-only (pose from the calibrated intrinsics + marker size alone).
+    depth_topic: ""                   # RGB only: pose from calibrated intrinsics + marker size
+    use_depth: false
+    # Gazebo stamps the images with openarm_zed_sim_camera_link (x forward); poses are computed
+    # in the optical convention, i.e. in this frame:
+    camera_frame: openarm_zed_sim_camera_optical_frame
+    corner_refinement: apriltag
+    default_marker_size: 0.0          # ignore ids that are not in marker_ids
+    min_side_px: 12.0
+    max_reprojection_error: 2.0
+    publish_tf: true
+    tf_prefix: aruco_
+    publish_debug_image: true
+    depth:
+      shrink: 0.8
+      min_points: 30
+      max_plane_rms: 0.004
+
+fiducial_object_tracker:
+  ros__parameters:
+    reference_frame: world            # MoveIt planning frame of the OpenArm
+    detections_topic: /aruco_detector/detections
+    tracked_objects: [portafilter, machine_mount]
+    publish_tf: true                  # world -> portafilter, world -> machine_mount
+    min_confidence: 0.0
+    require_depth_refined: false
+    filter:
+      window: 6
+      max_age: 1.5
+      position_tolerance: 0.003       # m
+      angle_tolerance: 0.035          # rad (2 deg)

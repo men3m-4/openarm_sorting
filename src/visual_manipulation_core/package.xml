@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>visual_manipulation_core</name>
+  <version>0.1.0</version>
+  <description>
+    Core library of the reusable visual-manipulation framework (pure Python + NumPy, no ROS
+    runtime dependency): SE(3) transforms, temporal pose filter, grasp pose generation,
+    bayonet (insert + rotate) planning, position-based visual servoing, task state machine.
+  </description>
+  <maintainer email="muhammad.abdelmoniem4@gmail.com">men3m</maintainer>
+  <license>Apache-2.0</license>
+
+  <exec_depend>python3-numpy</exec_depend>
+  <!-- only ros_conversions.py (optional module) uses ROS message types -->
+  <exec_depend>geometry_msgs</exec_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

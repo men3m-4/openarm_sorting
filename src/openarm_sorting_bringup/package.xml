@@ -24,6 +24,10 @@
   <exec_depend>openarm_sorting_description</exec_depend>
   <exec_depend>openarm_sorting_vision</exec_depend>
   <exec_depend>openarm_sorting_manipulation</exec_depend>
+  <!-- coffee scenario: generic framework packages + the Gazebo integration layer -->
+  <exec_depend>visual_manipulation_perception</exec_depend>
+  <exec_depend>visual_manipulation_tasks</exec_depend>
+  <exec_depend>visual_manipulation_gazebo</exec_depend>
 
   <!-- upstream OpenArm -->
   <exec_depend>openarm_description</exec_depend>
